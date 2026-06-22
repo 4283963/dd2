@@ -1,0 +1,96 @@
+.page {
+  max-width: 1000px;
+  margin: 30px auto;
+  padding: 24px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.page-title {
+  margin: 0 0 20px 0;
+  color: #1f3a5f;
+  font-size: 24px;
+}
+
+.toolbar {
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.error-text {
+  color: #d4380d;
+  font-size: 14px;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table th,
+.data-table td {
+  padding: 12px 14px;
+  text-align: left;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 14px;
+}
+
+.data-table th {
+  background: #fafafa;
+  color: #555;
+  font-weight: 600;
+}
+
+.data-table tr:hover {
+  background: #f5f7fa;
+}
+
+.empty-row {
+  text-align: center;
+  color: #999;
+  padding: 32px;
+}
+
+.btn {
+  padding: 6px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: opacity 0.2s;
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.btn-primary {
+  background: #1677ff;
+  color: #fff;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #0958d9;
+}
+
+.btn-success {
+  background: #52c41a;
+  color: #fff;
+}
+
+.btn-success:hover:not(:disabled) {
+  background: #389e0d;
+}
+
+.btn-default {
+  background: #f0f0f0;
+  color: #333;
+}
+
+.btn-default:hover:not(:disabled) {
+  background: #d9d9d9;
+}

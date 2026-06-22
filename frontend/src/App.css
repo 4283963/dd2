@@ -1,0 +1,20 @@
+.app {
+  min-height: 100vh;
+}
+
+.app-header {
+  background: #1f3a5f;
+  padding: 16px 32px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.app-logo {
+  color: #fff;
+  font-size: 18px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.app-main {
+  padding: 0;
+}
