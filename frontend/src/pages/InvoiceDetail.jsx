@@ -93,13 +93,29 @@ export default function InvoiceDetail() {
           <h3>费用明细</h3>
           <div className="detail-grid">
             <div className="detail-item">
-              <label>单价(元/小时)</label>
+              <label>基础单价(元/小时)</label>
               <span className="amount">{invoice.unitPrice}</span>
             </div>
             <div className="detail-item">
-              <label>靠泊时长(小时)</label>
+              <label>靠泊总时长(小时)</label>
               <span>{invoice.berthDurationHours}</span>
             </div>
+            {invoice.nightHours && invoice.nightHours > 0 && (
+              <>
+                <div className="detail-item">
+                  <label>白天时长(小时)</label>
+                  <span>{(invoice.berthDurationHours - invoice.nightHours).toFixed(2)}</span>
+                </div>
+                <div className="detail-item">
+                  <label>夜间时长(小时)</label>
+                  <span className="night-tag">{invoice.nightHours}</span>
+                </div>
+                <div className="detail-item surcharge">
+                  <label>夜间溢价(+20%)</label>
+                  <span className="amount surcharge-amount">+ ¥ {invoice.nightSurchargeAmount}</span>
+                </div>
+              </>
+            )}
             <div className="detail-item highlight">
               <label>应付金额</label>
               <span className="amount total">¥ {invoice.totalAmount}</span>

@@ -28,6 +28,14 @@ public class DataInitializer implements CommandLineRunner {
         berthRecordRepository.save(buildRecord("巨龙号", new BigDecimal("7500"), new BigDecimal("2"), "TIER3", LocalDateTime.now().minusHours(2), LocalDateTime.now()));
         berthRecordRepository.save(buildRecord("蓝鲸号", new BigDecimal("1200"), new BigDecimal("8"), "TIER2", LocalDateTime.now().minusHours(8), LocalDateTime.now()));
         berthRecordRepository.save(buildRecord("小渔船009", new BigDecimal("500"), new BigDecimal("3"), "TIER1", LocalDateTime.now().minusHours(3), LocalDateTime.now()));
+
+        LocalDateTime tonight23 = LocalDateTime.now().withHour(23).withMinute(0).withSecond(0).withNano(0);
+        LocalDateTime tomorrow05 = tonight23.plusHours(6);
+        berthRecordRepository.save(buildRecord("夜航者号", new BigDecimal("2000"), new BigDecimal("6"), "TIER2", tonight23, tomorrow05));
+
+        LocalDateTime yesterday20 = LocalDateTime.now().minusDays(1).withHour(20).withMinute(0).withSecond(0).withNano(0);
+        LocalDateTime today04 = yesterday20.plusHours(8);
+        berthRecordRepository.save(buildRecord("深夜运输船", new BigDecimal("6000"), new BigDecimal("8"), "TIER3", yesterday20, today04));
     }
 
     private ShipBerthRecord buildRecord(String shipName, BigDecimal tonnage, BigDecimal hours, String rateType,

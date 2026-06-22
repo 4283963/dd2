@@ -24,6 +24,10 @@ public class BerthBillingServiceImpl implements BerthBillingService {
     private static final BigDecimal RATE_TIER2 = new BigDecimal("10");
     private static final BigDecimal RATE_TIER3 = new BigDecimal("20");
 
+    private static final BigDecimal NIGHT_SURCHARGE_RATE = new BigDecimal("0.2");
+    private static final int NIGHT_START_HOUR = 22;
+    private static final int NIGHT_END_HOUR = 6;
+
     private final ShipBerthRecordRepository berthRecordRepository;
     private final WharfInvoiceRepository invoiceRepository;
 
@@ -62,8 +66,14 @@ public class BerthBillingServiceImpl implements BerthBillingService {
         }
 
         BigDecimal unitPrice = resolveUnitPrice(record.getTonnage());
-        BigDecimal totalAmount = unitPrice.multiply(record.getBerthDurationHours())
+        BigDecimal nightHours = calculateNightHours(record.getBerthTime(), record.getLeaveTime());
+        BigDecimal normalHours = record.getBerthDurationHours().subtract(nightHours);
+        BigDecimal nightSurchargeAmount = unitPrice.multiply(nightHours)
+                .multiply(NIGHT_SURCHARGE_RATE)
                 .setScale(2, RoundingMode.HALF_UP);
+        BigDecimal baseAmount = unitPrice.multiply(record.getBerthDurationHours())
+                .setScale(2, RoundingMode.HALF_UP);
+        BigDecimal totalAmount = baseAmount.add(nightSurchargeAmount);
 
         WharfInvoice invoice = new WharfInvoice();
         invoice.setBerthRecordId(record.getId());
@@ -72,6 +82,8 @@ public class BerthBillingServiceImpl implements BerthBillingService {
         invoice.setBerthDurationHours(record.getBerthDurationHours());
         invoice.setRateType(record.getRateType());
         invoice.setUnitPrice(unitPrice);
+        invoice.setNightHours(nightHours);
+        invoice.setNightSurchargeAmount(nightSurchargeAmount);
         invoice.setTotalAmount(totalAmount);
         invoice.setStatus("UNPAID");
         invoice.setCreateTime(LocalDateTime.now());
@@ -105,5 +117,35 @@ public class BerthBillingServiceImpl implements BerthBillingService {
             return RATE_TIER2;
         }
         return RATE_TIER3;
+    }
+
+    private BigDecimal calculateNightHours(LocalDateTime berthTime, LocalDateTime leaveTime) {
+        if (berthTime == null || leaveTime == null || !leaveTime.isAfter(berthTime)) {
+            return BigDecimal.ZERO;
+        }
+
+        BigDecimal totalNightHours = BigDecimal.ZERO;
+        LocalDateTime cursor = berthTime;
+
+        while (cursor.isBefore(leaveTime)) {
+            LocalDateTime nextHour = cursor.plusHours(1).withMinute(0).withSecond(0).withNano(0);
+            if (nextHour.isAfter(leaveTime)) {
+                nextHour = leaveTime;
+            }
+
+            BigDecimal segmentHours = new BigDecimal(
+                    nextHour.atZone(java.time.ZoneId.systemDefault()).toInstant().toEpochMilli()
+                            - cursor.atZone(java.time.ZoneId.systemDefault()).toInstant().toEpochMilli())
+                    .divide(new BigDecimal(3600 * 1000), 4, RoundingMode.HALF_UP);
+
+            int hourOfDay = cursor.getHour();
+            if (hourOfDay >= NIGHT_START_HOUR || hourOfDay < NIGHT_END_HOUR) {
+                totalNightHours = totalNightHours.add(segmentHours);
+            }
+
+            cursor = nextHour;
+        }
+
+        return totalNightHours.setScale(2, RoundingMode.HALF_UP);
     }
 }

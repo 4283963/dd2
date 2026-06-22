@@ -35,6 +35,12 @@ public class WharfInvoice {
     @Column(name = "unit_price", nullable = false)
     private BigDecimal unitPrice;
 
+    @Column(name = "night_hours")
+    private BigDecimal nightHours;
+
+    @Column(name = "night_surcharge_amount")
+    private BigDecimal nightSurchargeAmount;
+
     @Column(name = "total_amount", nullable = false)
     private BigDecimal totalAmount;
 
@@ -98,6 +104,22 @@ public class WharfInvoice {
 
     public void setUnitPrice(BigDecimal unitPrice) {
         this.unitPrice = unitPrice;
+    }
+
+    public BigDecimal getNightHours() {
+        return nightHours;
+    }
+
+    public void setNightHours(BigDecimal nightHours) {
+        this.nightHours = nightHours;
+    }
+
+    public BigDecimal getNightSurchargeAmount() {
+        return nightSurchargeAmount;
+    }
+
+    public void setNightSurchargeAmount(BigDecimal nightSurchargeAmount) {
+        this.nightSurchargeAmount = nightSurchargeAmount;
     }
 
     public BigDecimal getTotalAmount() {
